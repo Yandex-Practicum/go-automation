@@ -26,25 +26,10 @@ func main() {
 	}
 
 	checker := plagiarismchecker.New(cfg.UserKey, cfg.Visible)
-	uids := make(map[string]string)
-	for _, fileName := range cfg.Files {
-		if !filenameRegexp.MatchString(fileName) {
-			continue
-		}
 
-		text, err := os.ReadFile(fileName)
-		if err != nil {
-			fmt.Printf("::error file=%s::%s\n", fileName, err)
-			os.Exit(2)
-		}
-
-		uid, err := checker.AddText(string(text))
-		if err != nil {
-			fmt.Printf("::error file=%s::%s\n", fileName, err)
-			continue
-		}
-
-		uids[fileName] = uid
+	uids, err := textToReview(checker, cfg.Files)
+	if err != nil {
+		os.Exit(2)
 	}
 
 	fmt.Println("::group::Plagiarism checker links")
@@ -58,6 +43,7 @@ func main() {
 		uniq, err := checker.GetResult(uid)
 		if err != nil {
 			fmt.Printf("::error file=%s::%s\n", fileName, err)
+			continue
 		}
 		if uniq < cfg.MinUniq {
 			exitCode = 3
@@ -66,4 +52,29 @@ func main() {
 	}
 
 	os.Exit(exitCode)
+}
+
+func textToReview(checker *plagiarismchecker.Checker, files []string) (map[string]string, error) {
+	uids := make(map[string]string)
+	for _, fileName := range files {
+		if !filenameRegexp.MatchString(fileName) {
+			continue
+		}
+
+		text, err := os.ReadFile(fileName)
+		if err != nil {
+			fmt.Printf("::error file=%s::%s\n", fileName, err)
+			return nil, err
+		}
+
+		uid, err := checker.AddText(string(text))
+		if err != nil {
+			fmt.Printf("::error file=%s::%s\n", fileName, err)
+			continue
+		}
+
+		uids[fileName] = uid
+	}
+
+	return uids, nil
 }

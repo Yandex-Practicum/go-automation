@@ -3,6 +3,7 @@ package plagiarismchecker
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/pkg/errors"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -16,8 +17,17 @@ type Checker struct {
 	visible bool
 }
 
+type Uid = string
+
+const (
+	stillInProcessErrorCode = 181
+	maxLoop                 = 100
+)
+
+var stillInProcessError = errors.New("Processing")
+
 type AddTextResponse struct {
-	TextUid   string `json:"text_uid,omitempty"`
+	TextUid   Uid    `json:"text_uid,omitempty"`
 	ErrorCode int    `json:"error_code,omitempty"`
 	ErrorDesc string `json:"error_desc,omitempty"`
 }
@@ -35,7 +45,7 @@ func New(userKey string, visible bool) *Checker {
 	}
 }
 
-func (c *Checker) AddText(text string) (string, error) {
+func (c *Checker) AddText(text string) (Uid, error) {
 	data := url.Values{}
 	data.Add("text", text)
 	data.Add("userkey", c.userKey)
@@ -63,38 +73,50 @@ func (c *Checker) AddText(text string) (string, error) {
 	return addTextResponse.TextUid, nil
 }
 
-func (c *Checker) GetResult(uid string) (float32, error) {
-	data := url.Values{}
-	data.Add("uid", uid)
-	data.Add("userkey", c.userKey)
+func (c *Checker) GetResult(uid Uid) (float32, error) {
+	form := url.Values{}
+	form.Add("uid", uid)
+	form.Add("userkey", c.userKey)
 
-	for {
-		response, err := http.PostForm(textRuUrl, data)
-		if err != nil {
-			return 0, err
-		}
-
-		defer response.Body.Close()
-
-		decoder := json.NewDecoder(response.Body)
-		var getResultResponse GetResultResponse
-		if err := decoder.Decode(&getResultResponse); err != nil {
-			return 0, err
-		}
-
-		if getResultResponse.ErrorCode == 181 {
+	for i := 0; i < maxLoop; i++ {
+		uniq, err := c.getResult(form)
+		if err == stillInProcessError {
 			time.Sleep(time.Second)
 			continue
 		}
 
-		if getResultResponse.ErrorCode != 0 {
-			return 0, fmt.Errorf("%d: %s", getResultResponse.ErrorCode, getResultResponse.ErrorDesc)
-		}
-
-		unique, err := strconv.ParseFloat(getResultResponse.TextUnique, 32)
-		if err != nil {
-			return 0, err
-		}
-		return float32(unique), nil
+		return uniq, err
 	}
+
+	return 0, errors.New("Timeout exceeded")
+}
+
+func (c *Checker) getResult(form url.Values) (float32, error) {
+	response, err := http.PostForm(textRuUrl, form)
+	if err != nil {
+		return 0, err
+	}
+
+	defer response.Body.Close()
+
+	decoder := json.NewDecoder(response.Body)
+	var getResultResponse GetResultResponse
+	if err := decoder.Decode(&getResultResponse); err != nil {
+		return 0, err
+	}
+
+	if getResultResponse.ErrorCode == stillInProcessErrorCode {
+		return 0, stillInProcessError
+	}
+
+	if getResultResponse.ErrorCode != 0 {
+		return 0, fmt.Errorf("%d: %s", getResultResponse.ErrorCode, getResultResponse.ErrorDesc)
+	}
+
+	unique, err := strconv.ParseFloat(getResultResponse.TextUnique, 32)
+	if err != nil {
+		return 0, err
+	}
+
+	return float32(unique), nil
 }
