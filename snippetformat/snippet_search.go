@@ -14,7 +14,7 @@ type SnippetPosition struct {
 	End   int
 }
 
-var snippetRegexp = regexp.MustCompile("\\s*```go\\n(?P<Snippet>[\\s\\S]*?)\\n\\s*```")
+var snippetRegexp = regexp.MustCompile("\\s*```[gG]o\\n(?P<Snippet>[\\s\\S]*?)\\n\\s*```")
 
 func FindSnippets(text string) []Snippet {
 	submatches := snippetRegexp.FindAllStringSubmatchIndex(text, -1)
