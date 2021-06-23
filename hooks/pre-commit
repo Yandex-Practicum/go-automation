@@ -1,0 +1,20 @@
+#!/bin/bash
+# Automatic branch validation and snippet formatting
+#
+# To use, execute the following
+# ln -s <PATH_TO_AUTOMATION_REPO>/hooks/pre-commit .git/hooks/pre-commit
+#
+
+if ! yt-snippet-formatter
+then
+  exit 1
+fi
+
+BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+VALID_BRANCH_REGEX="^[0-9]+.[0-9]+.[a-zA-Z0-9-]+$"
+MESSAGE="invalid branch: \"$BRANCH\". Branch names must follow the contract: \"$VALID_BRANCH_REGEX\". Rename your branch, please."
+if [[ ! $BRANCH =~ $VALID_BRANCH_REGEX ]]
+then
+    echo "$MESSAGE"
+    exit 1
+fi
