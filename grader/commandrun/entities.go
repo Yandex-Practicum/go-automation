@@ -13,6 +13,9 @@ type RunResult struct {
 	ResourceInfo *ResourceInfo
 }
 
+type RunOptions struct {
+}
+
 type ResourceInfo struct {
 	Memory grader.MemoryAmount
 	Time   time.Duration

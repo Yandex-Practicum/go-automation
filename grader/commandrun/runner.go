@@ -29,8 +29,8 @@ func NewRunner(timeout time.Duration, cmdName string, cmdArgs ...string) Runner 
 	}
 }
 
-func (r *runner) Run(ctx context.Context) (*RunResult, error) {
-	// TOOD limit memory consumption
+func (r *runner) Run(ctx context.Context, oprions RunOptions) (*RunResult, error) {
+	// TODO limit memory consumption
 	ctx, cancel := context.WithTimeout(ctx, r.timeout*2)
 	defer cancel()
 
