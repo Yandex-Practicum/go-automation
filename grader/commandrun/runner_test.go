@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Yandex-Practicum/go-automation/automation/gotools/grader"
 	"github.com/Yandex-Practicum/go-automation/automation/gotools/grader/commandrun"
 	"github.com/stretchr/testify/suite"
 )
@@ -45,4 +46,13 @@ func (s *RunnerTestSuite) TestTimeout() {
 	s.Require().NoError(err)
 	s.Require().NotNil(result)
 	s.Less(result.Duration, time.Millisecond*4)
+}
+
+func (s *RunnerTestSuite) TestMemoryLimit() {
+	runner := commandrun.NewRunner(time.Second, "cat", "hello")
+
+	result, err := runner.Run(context.Background())
+	s.Require().NoError(err)
+	s.Require().NotNil(result)
+	s.Less(result.ResourceInfo.Memory/grader.MemoryAmountKByte, 10_000)
 }
