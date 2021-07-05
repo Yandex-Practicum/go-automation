@@ -16,7 +16,7 @@ type Suite struct {
 type Case struct {
 	ID             CaseID           `json:"id"`
 	Tag            CaseTag          `json:"tag,omitempty"`
-	Input          string           `json:"input"` // TODO pass to commandrun.Runner
+	Input          string           `json:"input"`
 	TimeLimitMilli grader.TimeMilli `json:"timeMilli"`
 	// TODO add memory limit
 }
