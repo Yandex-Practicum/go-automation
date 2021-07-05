@@ -14,6 +14,7 @@ type RunResult struct {
 }
 
 type RunOptions struct {
+	Dir string
 }
 
 type ResourceInfo struct {
