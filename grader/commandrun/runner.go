@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
+	"strings"
 	"syscall"
 	"time"
 
@@ -42,6 +43,7 @@ func (r *runner) Run(ctx context.Context, options RunOptions) (*RunResult, error
 	cmd := exec.CommandContext(ctx, r.cmdName, r.cmdArgs...)
 	cmd.Stdout, cmd.Stderr = &stdout, &stderr
 	cmd.Dir = options.Dir
+	cmd.Stdin = strings.NewReader(options.Stdin)
 
 	start := time.Now()
 	err := cmd.Run()

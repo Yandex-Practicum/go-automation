@@ -33,13 +33,8 @@ func (s *RunnerTestSuite) TearRun() {
 
 func (s *RunnerTestSuite) TestNoInput() {
 	s.Run("PrepareCode", func() {
-		s.createFile("go.mod", `
-module exercise
-
-go 1.15
-`)
-
-		s.createFile("main.go", `
+		s.createMod()
+		s.createMain(`
 package main
 
 import "fmt"
@@ -77,6 +72,66 @@ func main() {
 		s.EqualValues("hello\n", caseReport.UserOutput)
 		s.Less(caseReport.TimeUsed, caseReport.TimeLimitMilli)
 	})
+}
+
+func (s *RunnerTestSuite) TestWithUserInput() {
+	s.Run("PrepareCode", func() {
+		s.createMod()
+		s.createMain(`
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	var input string
+    fmt.Scanln(&input)
+	fmt.Println(input + "_suffix")
+}
+`)
+	})
+
+	s.Run("Run", func() {
+		runner := caserun.NewRunner()
+		report, err := runner.Run(context.Background(), caserun.Query{
+			ModulePath: s.tempDir,
+			Suite: caserun.Suite{
+				ID: "Suite",
+				Cases: []caserun.Case{
+					{
+						ID:             "id",
+						Tag:            "tag",
+						Input:          "input",
+						TimeLimitMilli: 1000,
+					},
+				},
+			},
+		})
+		s.Require().NoError(err)
+
+		s.Require().NotNil(report)
+		s.Require().Len(report.Cases, 1)
+
+		caseReport := report.Cases[0]
+		s.EqualValues("id", caseReport.ID)
+		s.EqualValues("tag", caseReport.Tag)
+		s.EqualValues(1000, caseReport.TimeLimitMilli)
+		s.EqualValues("input_suffix\n", caseReport.UserOutput)
+		s.Less(caseReport.TimeUsed, caseReport.TimeLimitMilli)
+	})
+}
+
+func (s *RunnerTestSuite) createMain(content string) {
+	s.createFile("main.go", content)
+}
+
+func (s *RunnerTestSuite) createMod() {
+	s.createFile("go.mod", `
+module exercise
+
+go 1.15
+`)
 }
 
 func (s *RunnerTestSuite) createFile(name, content string) {
