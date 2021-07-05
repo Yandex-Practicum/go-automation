@@ -17,8 +17,7 @@ type Runner interface {
 	Run(ctx context.Context, query Query) (*Report, error)
 }
 
-type runner struct {
-}
+type runner struct{}
 
 var _ Runner = (*runner)(nil)
 

@@ -2,9 +2,6 @@ package caserun_test
 
 import (
 	"context"
-	"io/ioutil"
-	"os"
-	"path"
 	"testing"
 
 	"github.com/Yandex-Practicum/go-automation/automation/gotools/grader/caserun"
@@ -12,29 +9,17 @@ import (
 )
 
 type RunnerTestSuite struct {
-	suite.Suite
-
-	tempDir string
+	Suite
 }
 
 func TestRunnerTestSuite(t *testing.T) {
 	suite.Run(t, &RunnerTestSuite{})
 }
 
-func (s *RunnerTestSuite) SetupTest() {
-	var err error
-	s.tempDir, err = ioutil.TempDir("", "caserun_*")
-	s.Require().NoError(err)
-}
-
-func (s *RunnerTestSuite) TearRun() {
-	s.Require().NoError(os.RemoveAll(s.tempDir))
-}
-
 func (s *RunnerTestSuite) TestNoInput() {
 	s.Run("PrepareCode", func() {
-		s.createMod()
-		s.createMain(`
+		s.CreateMod()
+		s.CreateMain(`
 package main
 
 import "fmt"
@@ -76,8 +61,8 @@ func main() {
 
 func (s *RunnerTestSuite) TestWithUserInput() {
 	s.Run("PrepareCode", func() {
-		s.createMod()
-		s.createMain(`
+		s.CreateMod()
+		s.CreateMain(`
 package main
 
 import (
@@ -120,24 +105,4 @@ func main() {
 		s.EqualValues("input_suffix\n", caseReport.UserOutput)
 		s.Less(caseReport.TimeUsed, caseReport.TimeLimitMilli)
 	})
-}
-
-func (s *RunnerTestSuite) createMain(content string) {
-	s.createFile("main.go", content)
-}
-
-func (s *RunnerTestSuite) createMod() {
-	s.createFile("go.mod", `
-module exercise
-
-go 1.15
-`)
-}
-
-func (s *RunnerTestSuite) createFile(name, content string) {
-	s.Require().NoError(ioutil.WriteFile(
-		path.Join(s.tempDir, name),
-		[]byte(content),
-		os.ModePerm,
-	))
 }

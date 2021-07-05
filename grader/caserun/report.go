@@ -2,6 +2,11 @@ package caserun
 
 import "github.com/Yandex-Practicum/go-automation/automation/gotools/grader"
 
+type ComparisonReport struct {
+	OriginalSolutionReport *Report
+	SolutionReport         *Report
+}
+
 type Report struct {
 	Cases []CaseReport
 }
