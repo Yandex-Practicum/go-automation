@@ -12,6 +12,10 @@ type comparisonRunner struct {
 
 var _ ComparisonRunner = (*comparisonRunner)(nil)
 
+func NewComparisonRunner(runner Runner) *comparisonRunner {
+	return &comparisonRunner{runner: runner}
+}
+
 func (r *comparisonRunner) Run(ctx context.Context, query ComparisonQuery) (*ComparisonReport, error) {
 	originalReport, err := r.runner.Run(ctx, Query{
 		ModulePath: query.OriginalModulePath,

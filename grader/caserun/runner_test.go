@@ -18,7 +18,7 @@ func TestRunnerTestSuite(t *testing.T) {
 
 func (s *RunnerTestSuite) TestNoInput() {
 	s.Run("PrepareCode", func() {
-		s.CreateMod()
+		s.CreateMod(s.moduleDir)
 		s.CreateMain(`
 package main
 
@@ -27,13 +27,13 @@ import "fmt"
 func main() {
 	fmt.Println("hello")
 }
-`)
+`, s.moduleDir)
 	})
 
 	s.Run("Run", func() {
 		runner := caserun.NewRunner()
 		report, err := runner.Run(context.Background(), caserun.Query{
-			ModulePath: s.tempDir,
+			ModulePath: s.moduleDir,
 			Suite: caserun.Suite{
 				ID: "Suite",
 				Cases: []caserun.Case{
@@ -61,7 +61,7 @@ func main() {
 
 func (s *RunnerTestSuite) TestWithUserInput() {
 	s.Run("PrepareCode", func() {
-		s.CreateMod()
+		s.CreateMod(s.moduleDir)
 		s.CreateMain(`
 package main
 
@@ -74,13 +74,13 @@ func main() {
     fmt.Scanln(&input)
 	fmt.Println(input + "_suffix")
 }
-`)
+`, s.moduleDir)
 	})
 
 	s.Run("Run", func() {
 		runner := caserun.NewRunner()
 		report, err := runner.Run(context.Background(), caserun.Query{
-			ModulePath: s.tempDir,
+			ModulePath: s.moduleDir,
 			Suite: caserun.Suite{
 				ID: "Suite",
 				Cases: []caserun.Case{
