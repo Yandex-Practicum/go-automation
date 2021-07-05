@@ -13,6 +13,10 @@ import (
 	"github.com/pkg/errors"
 )
 
+type Runner interface {
+	Run(ctx context.Context, options RunOptions) (*RunResult, error)
+}
+
 type runner struct {
 	timeout time.Duration
 	cmdName string
@@ -54,10 +58,12 @@ func (r *runner) Run(ctx context.Context, options RunOptions) (*RunResult, error
 		return result, nil
 	}
 
-	_, extracted := r.extractExitCode(err)
+	exitCode, extracted := r.extractExitCode(err)
 	if !extracted {
 		return nil, err
 	}
+
+	result.ExitCode = exitCode
 
 	return result, nil
 }

@@ -7,6 +7,10 @@ import (
 	"github.com/Yandex-Practicum/go-automation/automation/gotools/grader/commandrun"
 )
 
+type Compiler interface {
+	CompilePackage(ctx context.Context, query Query) error
+}
+
 type compiler struct {
 }
 
@@ -18,10 +22,18 @@ func NewCompiler() *compiler {
 
 func (c *compiler) CompilePackage(ctx context.Context, query Query) error {
 	runner := c.getRunner(query)
-	if _, err := runner.Run(ctx, commandrun.RunOptions{
+
+	runInfo, err := runner.Run(ctx, commandrun.RunOptions{
 		Dir: query.ModulePath,
-	}); err != nil {
+	})
+	if err != nil {
 		return err
+	}
+
+	if runInfo.ExitCode != 0 {
+		return &Error{
+			msg: runInfo.Stderr,
+		}
 	}
 
 	return nil

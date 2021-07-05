@@ -7,6 +7,7 @@ import (
 )
 
 type RunResult struct {
+	ExitCode     int
 	Stdout       string
 	Stderr       string
 	Duration     time.Duration
@@ -14,7 +15,8 @@ type RunResult struct {
 }
 
 type RunOptions struct {
-	Dir string
+	Dir   string
+	Stdin string
 }
 
 type ResourceInfo struct {
