@@ -1,12 +1,12 @@
 package caserun
 
 type ComparisonQuery struct {
-	OriginalModulePath string
-	ModulePath         string
-	Suite              Suite
+	OriginalModulePath string `json:"originalModulePath"`
+	ModulePath         string `json:"modulePath"`
+	Suite              Suite  `json:"suite"`
 }
 
 type Query struct {
-	ModulePath string
-	Suite      Suite
+	ModulePath string `json:"modulePath"`
+	Suite      Suite  `json:"suite"`
 }
