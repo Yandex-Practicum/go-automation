@@ -49,7 +49,7 @@ func main() {
 
 	s.Run("MakeComparisonReport", func() {
 		runner := caserun.NewComparisonRunner(caserun.NewRunner())
-		report, err := runner.Run(context.Background(), caserun.ComparisonQuery{
+		report, err := runner.CompareModules(context.Background(), caserun.ComparisonQuery{
 			OriginalModulePath: s.originalModuleDir,
 			ModulePath:         s.moduleDir,
 			Suite: caserun.Suite{

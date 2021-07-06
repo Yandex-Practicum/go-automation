@@ -13,10 +13,6 @@ import (
 	"github.com/Yandex-Practicum/go-automation/automation/gotools/grader/compilation"
 )
 
-type Runner interface {
-	Run(ctx context.Context, query Query) (*Report, error)
-}
-
 type runner struct{}
 
 var _ Runner = (*runner)(nil)
@@ -25,7 +21,7 @@ func NewRunner() Runner {
 	return &runner{}
 }
 
-func (r *runner) Run(ctx context.Context, query Query) (*Report, error) {
+func (r *runner) Run(ctx context.Context, query Query) (*SuiteReport, error) {
 	solutionDir, err := r.makeSolutionDir(ctx, query.Suite.ID)
 	if err != nil {
 		return nil, err
@@ -47,7 +43,7 @@ func (r *runner) Run(ctx context.Context, query Query) (*Report, error) {
 		caseReports = append(caseReports, *caseReport)
 	}
 
-	return &Report{
+	return &SuiteReport{
 		Cases: caseReports,
 	}, nil
 }

@@ -2,21 +2,17 @@ package caserun
 
 import "context"
 
-type ComparisonRunner interface {
-	Run(ctx context.Context, query ComparisonQuery) (*ComparisonReport, error)
-}
-
-type comparisonRunner struct {
+type moduleComparator struct {
 	runner Runner
 }
 
-var _ ComparisonRunner = (*comparisonRunner)(nil)
+var _ ModuleComparator = (*moduleComparator)(nil)
 
-func NewComparisonRunner(runner Runner) *comparisonRunner {
-	return &comparisonRunner{runner: runner}
+func NewComparisonRunner(runner Runner) *moduleComparator {
+	return &moduleComparator{runner: runner}
 }
 
-func (r *comparisonRunner) Run(ctx context.Context, query ComparisonQuery) (*ComparisonReport, error) {
+func (r *moduleComparator) CompareModules(ctx context.Context, query ComparisonQuery) (*ComparisonReport, error) {
 	originalReport, err := r.runner.Run(ctx, Query{
 		ModulePath: query.OriginalModulePath,
 		Suite:      query.Suite,
