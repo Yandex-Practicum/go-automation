@@ -3,12 +3,12 @@ package caserun
 import "github.com/Yandex-Practicum/go-automation/automation/gotools/grader"
 
 type ComparisonReport struct {
-	OriginalSolutionReport *SuiteReport
-	SolutionReport         *SuiteReport
+	OriginalSolutionReport *SuiteReport `json:"originalSolutionReport"`
+	SolutionReport         *SuiteReport `json:"solutionReport"`
 }
 
 type SuiteReport struct {
-	Cases []CaseReport
+	Cases []CaseReport `json:"cases"`
 }
 
 type CaseReport struct {
