@@ -49,11 +49,16 @@ func (r *runner) Run(ctx context.Context, options RunOptions) (*RunResult, error
 	err := cmd.Run()
 	timeToRun := time.Now().Sub(start)
 
+	var resourceInfo *ResourceInfo
+	if procState := cmd.ProcessState; procState != nil {
+		resourceInfo = r.getResourceInfo(procState)
+	}
+
 	result := &RunResult{
 		Stdout:       stdout.String(),
 		Stderr:       stderr.String(),
 		Duration:     timeToRun,
-		ResourceInfo: r.getResourceInfo(cmd.ProcessState),
+		ResourceInfo: resourceInfo,
 	}
 
 	if err == nil {

@@ -5,8 +5,11 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"io/ioutil"
+	"os"
 
 	"github.com/Yandex-Practicum/go-automation/automation/gotools/grader/caserun"
+	"github.com/pkg/errors"
 )
 
 var prettyOutput bool
@@ -18,14 +21,14 @@ func init() {
 func main() {
 	flag.Parse()
 
-	var queryData string
-	if _, err := fmt.Scanln(&queryData); err != nil {
+	queryData, err := ioutil.ReadAll(os.Stdin)
+	if err != nil {
 		panic(err)
 	}
 
 	var query caserun.ComparisonQuery
-	if err := json.Unmarshal([]byte(queryData), &query); err != nil {
-		panic(err)
+	if err := json.Unmarshal(queryData, &query); err != nil {
+		panic(errors.Wrap(err, fmt.Sprintf("bad input:\"%s\"", queryData)))
 	}
 
 	comparisonRunner := caserun.NewComparisonRunner(caserun.NewRunner())
