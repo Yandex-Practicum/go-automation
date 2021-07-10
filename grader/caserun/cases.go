@@ -17,6 +17,6 @@ type Case struct {
 	ID             CaseID           `json:"id"`
 	Tag            CaseTag          `json:"tag,omitempty"`
 	Input          string           `json:"input"`
-	TimeLimitMilli grader.TimeMilli `json:"timeMilli"`
+	TimeLimitMilli grader.TimeMilli `json:"time_limit_milli"`
 	// TODO add memory limit
 }

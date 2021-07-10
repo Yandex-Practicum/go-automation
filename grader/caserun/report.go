@@ -3,8 +3,8 @@ package caserun
 import "github.com/Yandex-Practicum/go-automation/automation/gotools/grader"
 
 type ComparisonReport struct {
-	OriginalSolutionReport *SuiteReport `json:"originalSolutionReport"`
-	SolutionReport         *SuiteReport `json:"solutionReport"`
+	OriginalSolutionReport *SuiteReport `json:"original_solution_report"`
+	SolutionReport         *SuiteReport `json:"solution_report"`
 }
 
 type SuiteReport struct {
@@ -14,9 +14,9 @@ type SuiteReport struct {
 type CaseReport struct {
 	ID             CaseID           `json:"id"`
 	Tag            CaseTag          `json:"tag,omitempty"`
-	TimeLimitMilli grader.TimeMilli `json:"timeLimitMilli"`
-	TimeUsed       grader.TimeMilli `json:"timeUsed"`
-	//MemoryLimit    grader.MemoryAmount `json:"memoryLimit"`
-	//MemoryUsed     grader.MemoryAmount `json:"memoryUsed"`
-	UserOutput string `json:"userOutput"`
+	TimeLimitMilli grader.TimeMilli `json:"time_limit_milli"`
+	TimeUsedMilli  grader.TimeMilli `json:"time_used_milli"`
+	//MemoryLimit    grader.MemoryAmount `json:"memory_limit"`
+	//MemoryUsed     grader.MemoryAmount `json:"memory_used"`
+	UserOutput string `json:"user_output"`
 }

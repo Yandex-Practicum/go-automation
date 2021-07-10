@@ -62,7 +62,7 @@ func (r *runner) runCase(ctx context.Context, binaryPath string, c Case) (*CaseR
 		ID:             c.ID,
 		Tag:            c.Tag,
 		TimeLimitMilli: c.TimeLimitMilli,
-		TimeUsed:       grader.TimeMilli(runResult.Duration / time.Millisecond),
+		TimeUsedMilli:  grader.TimeMilli(runResult.Duration / time.Millisecond),
 		UserOutput:     runResult.Stdout,
 	}, nil
 }
