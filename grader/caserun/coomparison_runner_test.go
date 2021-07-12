@@ -66,7 +66,7 @@ func main() {
 		})
 		s.Require().NoError(err)
 
-		s.EqualValues("hello\n", report.OriginalSolutionReport.Cases[0].UserOutput)
-		s.EqualValues("buy\n", report.SolutionReport.Cases[0].UserOutput)
+		s.EqualValues("hello\n", report.OriginalSolutionReport.Cases[0].Stdout)
+		s.EqualValues("buy\n", report.SolutionReport.Cases[0].Stdout)
 	})
 }

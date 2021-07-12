@@ -54,7 +54,7 @@ func main() {
 		s.EqualValues("id", caseReport.ID)
 		s.EqualValues("tag", caseReport.Tag)
 		s.EqualValues(1000, caseReport.TimeLimitMilli)
-		s.EqualValues("hello\n", caseReport.UserOutput)
+		s.EqualValues("hello\n", caseReport.Stdout)
 		s.Less(caseReport.TimeUsedMilli, caseReport.TimeLimitMilli)
 	})
 }
@@ -102,7 +102,7 @@ func main() {
 		s.EqualValues("id", caseReport.ID)
 		s.EqualValues("tag", caseReport.Tag)
 		s.EqualValues(1000, caseReport.TimeLimitMilli)
-		s.EqualValues("input_suffix\n", caseReport.UserOutput)
+		s.EqualValues("input_suffix\n", caseReport.Stdout)
 		s.Less(caseReport.TimeUsedMilli, caseReport.TimeLimitMilli)
 	})
 }
