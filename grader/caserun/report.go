@@ -18,6 +18,7 @@ type CaseReport struct {
 	TimeUsedMilli  grader.TimeMilli `json:"time_used_milli"`
 	//MemoryLimit    grader.MemoryAmount `json:"memory_limit"`
 	//MemoryUsed     grader.MemoryAmount `json:"memory_used"`
+	Stdin    string `json:"stdin"`
 	Stdout   string `json:"stdout"`
 	Stderr   string `json:"stderr"`
 	ExitCode int    `json:"exit_code"`
