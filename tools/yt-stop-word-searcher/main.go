@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 
-	"github.com/Yandex-Practicum/go-automation/wordvalidation"
+	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/wordvalidation"
 )
 
 var rootDir string

@@ -7,7 +7,7 @@ import (
 	"path"
 	"testing"
 
-	"github.com/Yandex-Practicum/go-automation/wordvalidation"
+	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/wordvalidation"
 	"github.com/stretchr/testify/suite"
 )
 

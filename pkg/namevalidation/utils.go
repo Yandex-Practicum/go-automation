@@ -7,7 +7,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/Yandex-Practicum/go-automation/filesearch"
+	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/filesearch"
 	"github.com/pkg/errors"
 )
 

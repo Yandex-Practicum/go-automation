@@ -6,8 +6,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/Yandex-Practicum/go-automation/filesearch"
-	"github.com/Yandex-Practicum/go-automation/snippetformat"
+	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/filesearch"
+	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/snippetformat"
 )
 
 const (

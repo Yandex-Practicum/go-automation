@@ -3,7 +3,7 @@ package snippetformat_test
 import (
 	"testing"
 
-	"github.com/Yandex-Practicum/go-automation/snippetformat"
+	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/snippetformat"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

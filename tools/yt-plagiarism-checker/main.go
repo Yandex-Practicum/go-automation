@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/Yandex-Practicum/go-automation/automation/gotools/plagiarismchecker"
-	"github.com/caarlos0/env"
 	"os"
 	"regexp"
+
+	plagiarismchecker2 "github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/plagiarismchecker"
+	"github.com/caarlos0/env"
 )
 
 type Config struct {
@@ -25,7 +26,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	checker := plagiarismchecker.New(cfg.UserKey, cfg.Visible)
+	checker := plagiarismchecker2.New(cfg.UserKey, cfg.Visible)
 
 	uids, err := textToReview(checker, cfg.Files)
 	if err != nil {
@@ -54,7 +55,7 @@ func main() {
 	os.Exit(exitCode)
 }
 
-func textToReview(checker *plagiarismchecker.Checker, files []string) (map[string]string, error) {
+func textToReview(checker *plagiarismchecker2.Checker, files []string) (map[string]string, error) {
 	uids := make(map[string]string)
 	for _, fileName := range files {
 		if !filenameRegexp.MatchString(fileName) {

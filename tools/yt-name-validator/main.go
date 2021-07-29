@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 
-	"github.com/Yandex-Practicum/go-automation/namevalidation"
+	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/namevalidation"
 )
 
 var rootDir string

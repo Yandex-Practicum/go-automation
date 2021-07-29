@@ -3,11 +3,12 @@ package plagiarismchecker
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/pkg/errors"
 	"net/http"
 	"net/url"
 	"strconv"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 const textRuUrl = "http://api.text.ru/post"
