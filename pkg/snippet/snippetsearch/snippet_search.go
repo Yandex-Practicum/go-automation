@@ -1,4 +1,4 @@
-package snippetformat
+package snippetsearch
 
 import (
 	"regexp"

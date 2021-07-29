@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/filesearch"
-	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/snippetformat"
+	snippetformat2 "github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/snippet/snippetformat"
 )
 
 const (
@@ -46,7 +46,7 @@ func main() {
 			log.Fatalf("failed to read file %s: %s", fileContent, err)
 		}
 
-		formattedContent, err := snippetformat.FormatText(string(fileContent))
+		formattedContent, err := snippetformat2.FormatText(string(fileContent))
 		if err != nil {
 			log.Fatalf("failed to format file %s: %s", path, err)
 		}

@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/snippet/snippetsearch"
 	"github.com/pkg/errors"
 )
 
 func FormatText(text string) (string, error) {
-	snippets := FindSnippets(text)
+	snippets := snippetsearch.FindSnippets(text)
 	if len(snippets) == 0 {
 		return text, nil
 	}
@@ -34,7 +35,7 @@ func FormatText(text string) (string, error) {
 	return sb.String(), nil
 }
 
-func getNonSnippetPrefix(text string, firstSnippet Snippet) string {
+func getNonSnippetPrefix(text string, firstSnippet snippetsearch.Snippet) string {
 	if firstSnippet.Position.Start == 0 {
 		return ""
 	}
@@ -42,7 +43,7 @@ func getNonSnippetPrefix(text string, firstSnippet Snippet) string {
 	return text[:firstSnippet.Position.Start]
 }
 
-func getNonSnippetSuffix(text string, lastSnippet Snippet) string {
+func getNonSnippetSuffix(text string, lastSnippet snippetsearch.Snippet) string {
 	if lastSnippet.Position.End == len(text) {
 		return ""
 	}
