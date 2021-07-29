@@ -8,9 +8,9 @@ import (
 	"path"
 	"time"
 
-	"github.com/Yandex-Practicum/go-automation/automation/gotools/grader"
-	"github.com/Yandex-Practicum/go-automation/automation/gotools/grader/commandrun"
-	"github.com/Yandex-Practicum/go-automation/automation/gotools/grader/compilation"
+	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/grader"
+	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/grader/commandrun"
+	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/grader/compilation"
 )
 
 type runner struct{}

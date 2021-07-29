@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Yandex-Practicum/go-automation/automation/gotools/grader/commandrun"
-	"github.com/Yandex-Practicum/go-automation/automation/gotools/grader/compilation"
+	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/grader/commandrun"
+	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/grader/compilation"
 	"github.com/stretchr/testify/suite"
 )
 

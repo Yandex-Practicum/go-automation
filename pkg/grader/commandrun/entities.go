@@ -3,7 +3,7 @@ package commandrun
 import (
 	"time"
 
-	"github.com/Yandex-Practicum/go-automation/automation/gotools/grader"
+	"github.com/Yandex-Practicum/go-automation/pkg/grader"
 )
 
 type RunResult struct {

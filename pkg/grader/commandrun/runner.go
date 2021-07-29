@@ -10,7 +10,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/Yandex-Practicum/go-automation/automation/gotools/grader"
+	"github.com/Yandex-Practicum/go-automation/pkg/grader"
 	"github.com/pkg/errors"
 )
 

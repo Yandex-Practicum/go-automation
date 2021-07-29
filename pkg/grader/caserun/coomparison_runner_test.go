@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/Yandex-Practicum/go-automation/automation/gotools/grader/caserun"
+	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/grader/caserun"
 	"github.com/stretchr/testify/suite"
 )
 

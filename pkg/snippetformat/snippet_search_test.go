@@ -23,16 +23,16 @@ func TestFindSnippets(t *testing.T) {
 		assert.EqualValues(t, snippetformat.Snippet{
 			Position: snippetformat.SnippetPosition{
 				Start: 6,
-				End:   31,
+				End:   32,
 			},
-			Text: "а внутри go-код",
+			Text: "а внутри go-код\n",
 		}, snippets[0])
 	})
 
 	t.Run("MultipleSnippets", func(t *testing.T) {
 		snippets := snippetformat.FindSnippets("```go\nsnippet 1\n``` text ```go\nsnippet 2\n```")
 		require.Len(t, snippets, 2)
-		assert.EqualValues(t, "snippet 1", snippets[0].Text)
-		assert.EqualValues(t, "snippet 2", snippets[1].Text)
+		assert.EqualValues(t, "snippet 1\n", snippets[0].Text)
+		assert.EqualValues(t, "snippet 2\n", snippets[1].Text)
 	})
 }

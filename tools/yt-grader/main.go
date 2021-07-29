@@ -8,7 +8,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/Yandex-Practicum/go-automation/automation/gotools/grader/caserun"
+	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/grader/caserun"
 	"github.com/pkg/errors"
 )
 

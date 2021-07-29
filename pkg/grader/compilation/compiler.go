@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/Yandex-Practicum/go-automation/automation/gotools/grader/commandrun"
+	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/grader/commandrun"
 )
 
 type Compiler interface {

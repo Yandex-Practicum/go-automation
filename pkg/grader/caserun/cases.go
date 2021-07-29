@@ -1,6 +1,6 @@
 package caserun
 
-import "github.com/Yandex-Practicum/go-automation/automation/gotools/grader"
+import "github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/grader"
 
 type CaseID string
 
