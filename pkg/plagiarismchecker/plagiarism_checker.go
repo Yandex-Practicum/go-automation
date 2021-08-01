@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/pkg/errors"
@@ -14,8 +15,9 @@ import (
 const textRuUrl = "http://api.text.ru/post"
 
 type Checker struct {
-	userKey string
-	visible bool
+	userKey       string
+	visible       bool
+	exceptDomains []string
 }
 
 type Uid = string
@@ -39,10 +41,11 @@ type GetResultResponse struct {
 	ErrorDesc  string `json:"error_desc,omitempty"`
 }
 
-func New(userKey string, visible bool) *Checker {
+func New(userKey string, visible bool, exceptDomains []string) *Checker {
 	return &Checker{
-		userKey: userKey,
-		visible: visible,
+		userKey:       userKey,
+		visible:       visible,
+		exceptDomains: exceptDomains,
 	}
 }
 
@@ -52,6 +55,10 @@ func (c *Checker) AddText(text string) (Uid, error) {
 	data.Add("userkey", c.userKey)
 	if c.visible {
 		data.Add("visible", "vis_on")
+	}
+
+	if len(c.exceptDomains) > 0 {
+		data.Add("exceptdomain", strings.Join(c.exceptDomains, ","))
 	}
 
 	response, err := http.PostForm(textRuUrl, data)
