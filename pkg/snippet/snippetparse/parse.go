@@ -12,13 +12,13 @@ import (
 
 const parserMode = parser.ParseComments
 
-func ParseSnippet(snippet snippetsearch.Snippet) (*ParsedSnippet, error) {
+func ParseSnippet(snippet snippetsearch.Snippet) (ParsedSnippet, error) {
 	file, _, _, err := parse(token.NewFileSet(), "snippet.go", []byte(snippet.Text), true)
 	if err != nil {
-		return nil, err
+		return ParsedSnippet{}, err
 	}
 
-	return &ParsedSnippet{
+	return ParsedSnippet{
 		Snippet: snippet,
 		AST:     file,
 	}, nil
