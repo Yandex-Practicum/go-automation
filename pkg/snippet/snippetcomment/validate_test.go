@@ -55,3 +55,51 @@ func TestValidateComment(t *testing.T) {
 		})
 	}
 }
+
+func TestValidateDocComment(t *testing.T) {
+	testCases := []struct {
+		Name                 string
+		Content              string
+		EntityNames          []string
+		ExpectError          bool
+		ExpectedErrorMessage string
+	}{
+		{
+			Name:                 "OK",
+			Content:              "Foo дока",
+			EntityNames:          []string{"Foo"},
+			ExpectError:          false,
+			ExpectedErrorMessage: "",
+		},
+		{
+			Name:                 "Empty comment",
+			Content:              "",
+			EntityNames:          []string{"Foo"},
+			ExpectError:          true,
+			ExpectedErrorMessage: "Empty comments are not allowed",
+		},
+		{
+			Name:                 "Wrong prefix",
+			Content:              "Bar дока",
+			EntityNames:          []string{"Foo"},
+			ExpectError:          true,
+			ExpectedErrorMessage: "Doc comment must start with documented entity name (need prefix Foo)",
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.Name, func(t *testing.T) {
+			err := snippetcomment.ValidateDocComment(snippetcomment.DocComment{
+				Content:       tc.Content,
+				EntitiesNames: tc.EntityNames,
+			})
+
+			if !tc.ExpectError {
+				require.NoError(t, err)
+			} else {
+				require.Error(t, err)
+				require.EqualValues(t, tc.ExpectedErrorMessage, err.Error())
+			}
+		})
+	}
+}
