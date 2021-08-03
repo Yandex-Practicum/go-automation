@@ -10,11 +10,12 @@ import (
 )
 
 func TestCommentsExtraction(t *testing.T) {
-	makeSimpleGoDoComments := func(content string) snippetcomment.Comments {
+	makeSimpleGoDoComments := func(content string, entitiesNames ...string) snippetcomment.Comments {
 		return snippetcomment.Comments{
 			DocComments: []snippetcomment.DocComment{
 				{
-					Content: content,
+					Content:       content,
+					EntitiesNames: entitiesNames,
 				},
 			},
 		}
@@ -36,7 +37,7 @@ func TestCommentsExtraction(t *testing.T) {
 // This is a doc comment
 type File struct{}
 `,
-			ExpectedComments: makeSimpleGoDoComments("This is a doc comment"),
+			ExpectedComments: makeSimpleGoDoComments("This is a doc comment", "File"),
 		},
 		{
 			Name: "AliasDocComment",
@@ -44,7 +45,7 @@ type File struct{}
 // This is a doc comment
 type A = a
 `,
-			ExpectedComments: makeSimpleGoDoComments("This is a doc comment"),
+			ExpectedComments: makeSimpleGoDoComments("This is a doc comment", "A"),
 		},
 		{
 			Name: "FuncDocComment",
@@ -52,7 +53,7 @@ type A = a
 // This is a doc comment
 func Foo() {}
 `,
-			ExpectedComments: makeSimpleGoDoComments("This is a doc comment"),
+			ExpectedComments: makeSimpleGoDoComments("This is a doc comment", "Foo"),
 		},
 		{
 			Name: "PackageDocComment",
@@ -60,7 +61,7 @@ func Foo() {}
 // This is a doc comment
 package main
 				`,
-			ExpectedComments: makeSimpleGoDoComments("This is a doc comment"),
+			ExpectedComments: makeSimpleGoDoComments("This is a doc comment", "main"),
 		},
 		{
 			Name: "VariableDocComment",
@@ -68,7 +69,7 @@ package main
 // This is a doc comment
 var A int
 `,
-			ExpectedComments: makeSimpleGoDoComments("This is a doc comment"),
+			ExpectedComments: makeSimpleGoDoComments("This is a doc comment", "A"),
 		},
 		{
 			Name: "MultilineDocComment",
@@ -77,7 +78,7 @@ var A int
 // multiline one
 var A int
 `,
-			ExpectedComments: makeSimpleGoDoComments("This is a doc comment\nmultiline one"),
+			ExpectedComments: makeSimpleGoDoComments("This is a doc comment\nmultiline one", "A"),
 		},
 		{
 			Name: "SimpleComment",
@@ -126,13 +127,16 @@ func main() {
 			ExpectedComments: snippetcomment.Comments{
 				DocComments: []snippetcomment.DocComment{
 					{
-						Content: "package",
+						Content:       "package",
+						EntitiesNames: []string{"main"},
 					},
 					{
-						Content: "type",
+						Content:       "type",
+						EntitiesNames: []string{"Type"},
 					},
 					{
-						Content: "func",
+						Content:       "func",
+						EntitiesNames: []string{"Foo"},
 					},
 				},
 				Comments: []snippetcomment.Comment{

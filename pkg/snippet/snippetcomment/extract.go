@@ -59,19 +59,19 @@ func extractDocComments(snippet snippetparse.ParsedSnippet) []docCommentWithPosi
 	var result []docCommentWithPosition
 
 	if packageDoc := snippet.AST.Doc; packageDoc != nil {
-		result = append(result, newNormalizedDocCommentWithPosition(packageDoc.Text(), packageDoc.Pos()))
+		result = append(result, newNormalizedDocCommentWithPosition(packageDoc.Text(), namesFromIdents(snippet.AST.Name), packageDoc.Pos()))
 	}
 
 	for _, decl := range snippet.AST.Decls {
 		switch typedDecl := decl.(type) {
 		case *ast.GenDecl:
 			if typedDecl.Doc != nil {
-				result = append(result, newNormalizedDocCommentWithPosition(typedDecl.Doc.Text(), typedDecl.Doc.Pos()))
+				result = append(result, newNormalizedDocCommentWithPosition(typedDecl.Doc.Text(), extractDeclarationNames(decl), typedDecl.Doc.Pos()))
 			}
 
 		case *ast.FuncDecl:
 			if typedDecl.Doc != nil {
-				result = append(result, newNormalizedDocCommentWithPosition(typedDecl.Doc.Text(), typedDecl.Doc.Pos()))
+				result = append(result, newNormalizedDocCommentWithPosition(typedDecl.Doc.Text(), extractDeclarationNames(decl), typedDecl.Doc.Pos()))
 			}
 		}
 	}
@@ -79,13 +79,50 @@ func extractDocComments(snippet snippetparse.ParsedSnippet) []docCommentWithPosi
 	return result
 }
 
-func newNormalizedDocCommentWithPosition(content string, pos token.Pos) docCommentWithPosition {
+func extractDeclarationNames(decl ast.Decl) []string {
+	switch typedDecl := decl.(type) {
+	case *ast.FuncDecl:
+		return []string{typedDecl.Name.Name}
+
+	case *ast.GenDecl:
+		specs := typedDecl.Specs
+
+		var result []string
+		for _, spec := range specs {
+			switch typedSpec := spec.(type) {
+			case *ast.TypeSpec:
+				result = append(result, namesFromIdents(typedSpec.Name)...)
+
+			case *ast.ValueSpec:
+				result = append(result, namesFromIdents(typedSpec.Names...)...)
+			}
+		}
+
+		return result
+
+	default:
+		return nil
+	}
+}
+
+func newNormalizedDocCommentWithPosition(content string, entitiesNames []string, pos token.Pos) docCommentWithPosition {
 	return docCommentWithPosition{
-		Comment:       NewDocComment(normalizeComment(content)),
+		Comment:       NewDocComment(normalizeComment(content), entitiesNames),
 		StartPosition: pos,
 	}
 }
 
 func normalizeComment(content string) string {
 	return strings.TrimSpace(content)
+}
+
+func namesFromIdents(idents ...*ast.Ident) []string {
+	result := make([]string, 0, len(idents))
+	for _, ident := range idents {
+		if ident != nil {
+			result = append(result, ident.Name)
+		}
+	}
+
+	return result
 }

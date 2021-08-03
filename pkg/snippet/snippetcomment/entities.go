@@ -16,11 +16,13 @@ func NewComment(content string) Comment {
 }
 
 type DocComment struct {
-	Content string
+	Content       string
+	EntitiesNames []string
 }
 
-func NewDocComment(content string) DocComment {
+func NewDocComment(content string, entitiesNames []string) DocComment {
 	return DocComment{
-		Content: content,
+		Content:       content,
+		EntitiesNames: entitiesNames,
 	}
 }
