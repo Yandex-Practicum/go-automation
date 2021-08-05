@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"sort"
 	"strings"
 
 	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/filesearch"
@@ -29,7 +30,7 @@ func main() {
 		log.Panicf("failed to read markdown files: %s", err)
 	}
 
-	errorMsgsPerFile := make(map[string][]string)
+	fileErrors := make(map[string][]positionedError)
 	for _, path := range paths {
 		fileContent, err := ioutil.ReadFile(path)
 		if err != nil {
@@ -42,10 +43,13 @@ func main() {
 		for _, snippet := range snippets {
 			parsedSnippet, err := snippetparse.ParseSnippet(snippet)
 			if err != nil {
-				errorMsgsPerFile[path] = append(errorMsgsPerFile[path], fmt.Sprintf(
-					"Failed to parse snippet at position %d \"%s\"", snippet.Position.Start,
-					getDemonstrationPrefix(snippet.Text, 50),
-				))
+				fileErrors[path] = append(fileErrors[path], positionedError{
+					Msg: fmt.Sprintf(
+						"Failed to parse snippet at position %d \"%s\"", snippet.Position.Start,
+						getDemonstrationPrefix(snippet.Text, 50),
+					),
+					Position: snippet.Position.Start,
+				})
 			}
 
 			parsedSnippets = append(parsedSnippets, parsedSnippet)
@@ -55,38 +59,64 @@ func main() {
 			comments := snippetcomment.ExtractComments(snippet)
 			for _, comment := range comments.Comments {
 				if err := snippetcomment.ValidateComment(comment); err != nil {
-					errorMsgsPerFile[path] = append(errorMsgsPerFile[path], fmt.Sprintf(
-						"Wrongly formatted comment \"%s\": %s", comment.Content, err.Error(),
-					))
+					fileErrors[path] = append(fileErrors[path], positionedError{
+						Msg: fmt.Sprintf(
+							"Wrongly formatted comment \"%s\": %s", comment.Content, err.Error(),
+						),
+						Position: int(comment.StartPosition),
+					})
 				}
 			}
 
 			for _, comment := range comments.DocComments {
 				if err := snippetcomment.ValidateDocComment(comment); err != nil {
-					errorMsgsPerFile[path] = append(errorMsgsPerFile[path], fmt.Sprintf(
-						"Wrongly formatted doc comment \"%s\": %s", comment.Content, err.Error(),
-					))
+					fileErrors[path] = append(fileErrors[path], positionedError{
+						Msg: fmt.Sprintf(
+							"Wrongly formatted doc comment \"%s\": %s", comment.Content, err.Error(),
+						),
+						Position: int(comment.StartPosition),
+					})
 				}
 			}
 		}
 	}
 
-	if len(errorMsgsPerFile) == 0 {
+	if len(fileErrors) == 0 {
 		return
 	}
 
+	log.Fatalf("Check comments in your lesson files\n %s", formatError(fileErrors))
+}
+
+type positionedError struct {
+	Msg      string
+	Position int
+}
+
+func formatError(errorMsgsPerFile map[string][]positionedError) string {
+	files := make([]string, 0, len(errorMsgsPerFile))
+	for f := range errorMsgsPerFile {
+		files = append(files, f)
+	}
+	sort.Strings(files)
+
 	var sb strings.Builder
-	for fileName, errMsgs := range errorMsgsPerFile {
+	for _, fileName := range files {
 		sb.WriteString(fileName)
 		sb.WriteString(":\n")
-		for _, msg := range errMsgs {
+
+		sort.Slice(errorMsgsPerFile[fileName], func(i, j int) bool {
+			return errorMsgsPerFile[fileName][i].Position < errorMsgsPerFile[fileName][j].Position
+		})
+
+		for _, msg := range errorMsgsPerFile[fileName] {
 			sb.WriteString("\t")
-			sb.WriteString(msg)
+			sb.WriteString(msg.Msg)
 			sb.WriteString("\n")
 		}
 	}
 
-	log.Fatalf("Check comments in your lesson files\n %s", sb.String()) // TODO make beautiful formatting
+	return sb.String()
 }
 
 func getDemonstrationPrefix(content string, prefixLength int) string {

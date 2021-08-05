@@ -9,17 +9,17 @@ import (
 )
 
 func ExtractComments(snippet snippetparse.ParsedSnippet) Comments {
-	docCommentWithPosition := extractDocComments(snippet)
+	docComments := extractDocComments(snippet)
 
-	comments := extractSimpleComments(snippet, docCommentWithPosition)
+	comments := extractSimpleComments(snippet, docComments)
 
 	return Comments{
-		DocComments: collectDocComments(docCommentWithPosition),
+		DocComments: docComments,
 		Comments:    comments,
 	}
 }
 
-func extractSimpleComments(snippet snippetparse.ParsedSnippet, docComments []docCommentWithPosition) []Comment {
+func extractSimpleComments(snippet snippetparse.ParsedSnippet, docComments []DocComment) []Comment {
 	knownDocCommentPositions := make(map[token.Pos]struct{}, len(docComments))
 	for _, c := range docComments {
 		knownDocCommentPositions[c.StartPosition] = struct{}{}
@@ -31,47 +31,33 @@ func extractSimpleComments(snippet snippetparse.ParsedSnippet, docComments []doc
 			continue
 		}
 
-		result = append(result, newNormalizedComment(comment.Text()))
+		result = append(result, newNormalizedComment(comment.Text(), comment.Pos()))
 	}
 
 	return result
 }
 
-func newNormalizedComment(content string) Comment {
-	return NewComment(normalizeComment(content))
+func newNormalizedComment(content string, pos token.Pos) Comment {
+	return NewComment(normalizeComment(content), pos)
 }
 
-type docCommentWithPosition struct {
-	Comment       DocComment
-	StartPosition token.Pos
-}
-
-func collectDocComments(comments []docCommentWithPosition) []DocComment {
+func extractDocComments(snippet snippetparse.ParsedSnippet) []DocComment {
 	var result []DocComment
-	for _, comment := range comments {
-		result = append(result, comment.Comment)
-	}
-
-	return result
-}
-
-func extractDocComments(snippet snippetparse.ParsedSnippet) []docCommentWithPosition {
-	var result []docCommentWithPosition
 
 	if packageDoc := snippet.AST.Doc; packageDoc != nil {
-		result = append(result, newNormalizedDocCommentWithPosition(packageDoc.Text(), namesFromIdents(snippet.AST.Name), packageDoc.Pos()))
+		result = append(result, newNormalizedDocComment(packageDoc.Text(), namesFromIdents(snippet.AST.Name), packageDoc.Pos()))
 	}
 
 	for _, decl := range snippet.AST.Decls {
 		switch typedDecl := decl.(type) {
 		case *ast.GenDecl:
 			if typedDecl.Doc != nil {
-				result = append(result, newNormalizedDocCommentWithPosition(typedDecl.Doc.Text(), extractDeclarationNames(decl), typedDecl.Doc.Pos()))
+				result = append(result, newNormalizedDocComment(typedDecl.Doc.Text(), extractDeclarationNames(decl), typedDecl.Doc.Pos()))
 			}
 
 		case *ast.FuncDecl:
 			if typedDecl.Doc != nil {
-				result = append(result, newNormalizedDocCommentWithPosition(typedDecl.Doc.Text(), extractDeclarationNames(decl), typedDecl.Doc.Pos()))
+				result = append(result, newNormalizedDocComment(typedDecl.Doc.Text(), extractDeclarationNames(decl), typedDecl.Doc.Pos()))
 			}
 		}
 	}
@@ -105,11 +91,8 @@ func extractDeclarationNames(decl ast.Decl) []string {
 	}
 }
 
-func newNormalizedDocCommentWithPosition(content string, entitiesNames []string, pos token.Pos) docCommentWithPosition {
-	return docCommentWithPosition{
-		Comment:       NewDocComment(normalizeComment(content), entitiesNames),
-		StartPosition: pos,
-	}
+func newNormalizedDocComment(content string, entitiesNames []string, pos token.Pos) DocComment {
+	return NewDocComment(normalizeComment(content), entitiesNames, pos)
 }
 
 func normalizeComment(content string) string {
