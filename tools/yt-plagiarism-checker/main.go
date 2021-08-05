@@ -5,15 +5,16 @@ import (
 	"os"
 	"regexp"
 
-	plagiarismchecker2 "github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/plagiarismchecker"
+	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/plagiarismchecker"
 	"github.com/caarlos0/env"
 )
 
 type Config struct {
-	UserKey string   `env:"USER_KEY"`
-	Files   []string `env:"FILES"`
-	Visible bool     `env:"VISIBLE" envDefault:"false"`
-	MinUniq float32  `env:"MIN_UNIQ" envDefault:"0"`
+	UserKey       string   `env:"USER_KEY"`
+	Files         []string `env:"FILES"`
+	Visible       bool     `env:"VISIBLE" envDefault:"false"`
+	MinUniq       float32  `env:"MIN_UNIQ" envDefault:"0"`
+	ExceptDomains []string `env:"EXCEPT_DOMAINS" envDefault:""`
 }
 
 var filenameRegexp = regexp.MustCompile(`\.md$`)
@@ -26,7 +27,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	checker := plagiarismchecker2.New(cfg.UserKey, cfg.Visible)
+	checker := plagiarismchecker.New(cfg.UserKey, cfg.Visible, cfg.ExceptDomains)
 
 	uids, err := textToReview(checker, cfg.Files)
 	if err != nil {
@@ -55,7 +56,7 @@ func main() {
 	os.Exit(exitCode)
 }
 
-func textToReview(checker *plagiarismchecker2.Checker, files []string) (map[string]string, error) {
+func textToReview(checker *plagiarismchecker.Checker, files []string) (map[string]string, error) {
 	uids := make(map[string]string)
 	for _, fileName := range files {
 		if !filenameRegexp.MatchString(fileName) {
