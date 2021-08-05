@@ -80,7 +80,13 @@ func ValidateComment(comment Comment) error {
 		return errors.New("Do not use . at the end of line comments")
 	}
 
-	if firstRune := contentRunes[0]; isRussianRune(firstRune) && isUpperCaseRune(firstRune) {
+	firstRune := contentRunes[0]
+
+	if !isRussianRune(firstRune) {
+		return errors.New("Comments must be written in Russian")
+	}
+
+	if isUpperCaseRune(firstRune) {
 		return errors.New("First letter must be in lower case")
 	}
 
