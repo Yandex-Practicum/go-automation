@@ -3,7 +3,7 @@ package snippetformat_test
 import (
 	"testing"
 
-	snippetformat2 "github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/snippet/snippetformat"
+	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/snippet/snippetformat"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -43,7 +43,7 @@ func TestFormatText(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.Name, func(t *testing.T) {
-			output, err := snippetformat2.FormatText(tc.Input)
+			output, err := snippetformat.FormatText(tc.Input)
 			require.NoError(t, err)
 			assert.EqualValues(t, tc.ExpectedOutput, output)
 		})
