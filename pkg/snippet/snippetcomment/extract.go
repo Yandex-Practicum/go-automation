@@ -8,7 +8,7 @@ import (
 	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/snippet/snippetparse"
 )
 
-func ExtractComments(snippet snippetparse.ParsedSnippet) (Comments, error) {
+func ExtractComments(snippet snippetparse.ParsedSnippet) Comments {
 	docCommentWithPosition := extractDocComments(snippet)
 
 	comments := extractSimpleComments(snippet, docCommentWithPosition)
@@ -16,7 +16,7 @@ func ExtractComments(snippet snippetparse.ParsedSnippet) (Comments, error) {
 	return Comments{
 		DocComments: collectDocComments(docCommentWithPosition),
 		Comments:    comments,
-	}, nil
+	}
 }
 
 func extractSimpleComments(snippet snippetparse.ParsedSnippet, docComments []docCommentWithPosition) []Comment {

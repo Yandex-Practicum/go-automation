@@ -155,8 +155,7 @@ func main() {
 			})
 			require.NoError(t, err)
 
-			comments, err := snippetcomment.ExtractComments(parsedSnippet)
-			require.NoError(t, err)
+			comments := snippetcomment.ExtractComments(parsedSnippet)
 
 			require.EqualValues(t, tc.ExpectedComments, comments)
 		})
