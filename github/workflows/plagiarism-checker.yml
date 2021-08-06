@@ -1,0 +1,31 @@
+name: plagiarism
+on: [push]
+jobs:
+  plagiarism:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo content
+        uses: actions/checkout@v2
+      - name: setup golang
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.16.0'
+      - name: clone go-automation
+        run: git clone https://github.com/Yandex-Practicum/go-automation.git /tmp/go-automation
+      - name: install yt-plagiarism-checker
+        run: cd /tmp/go-automation/tools/yt-plagiarism-checker && go install .
+      - name: Ls
+        run: ls -al
+      - name: Get change files        
+        id: files        
+        uses: jitterbit/get-changed-files@v1          
+      - name: List files
+        run: echo "files=$(echo "${{ steps.files.outputs.added_modified }}" | tr ' ' ',')" >> $GITHUB_ENV
+      - name: Test plagiarism
+        run: yt-plagiarism-checker
+        id: plagiarism
+        env:
+          USER_KEY: ${{ secrets.USER_KEY }}
+          FILES: ${{ env.files }}
+          VISIBLE: true
+          MIN_UNIQ: 80
