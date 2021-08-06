@@ -1,0 +1,18 @@
+name: validate-file-names
+on: [push]
+jobs:
+  validate-file-names:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo content
+        uses: actions/checkout@v2
+      - name: setup golang
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.15.0'
+      - name: clone go-automation
+        run: git clone https://github.com/Yandex-Practicum/go-automation.git /tmp/go-automation
+      - name: install yt-name-validator
+        run: cd /tmp/go-automation/tools/yt-name-validator && go install .
+      - name: validate file names
+        run: yt-name-validator -root=./lessons
