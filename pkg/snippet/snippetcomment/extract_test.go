@@ -39,7 +39,7 @@ func TestCommentsExtraction(t *testing.T) {
 // This is a doc comment
 type File struct{}
 `,
-			ExpectedComments: makeSimpleGoDoComments("This is a doc comment", 58, "File"),
+			ExpectedComments: makeSimpleGoDoComments("This is a doc comment", 59, "File"),
 		},
 		{
 			Name: "AliasDocComment",
@@ -47,7 +47,7 @@ type File struct{}
 // This is a doc comment
 type A = a
 `,
-			ExpectedComments: makeSimpleGoDoComments("This is a doc comment", 50, "A"),
+			ExpectedComments: makeSimpleGoDoComments("This is a doc comment", 51, "A"),
 		},
 		{
 			Name: "FuncDocComment",
@@ -55,7 +55,7 @@ type A = a
 // This is a doc comment
 func Foo() {}
 `,
-			ExpectedComments: makeSimpleGoDoComments("This is a doc comment", 53, "Foo"),
+			ExpectedComments: makeSimpleGoDoComments("This is a doc comment", 54, "Foo"),
 		},
 		{
 			Name: "PackageDocComment",
@@ -71,7 +71,7 @@ package main
 // This is a doc comment
 var A int
 `,
-			ExpectedComments: makeSimpleGoDoComments("This is a doc comment", 49, "A"),
+			ExpectedComments: makeSimpleGoDoComments("This is a doc comment", 50, "A"),
 		},
 		{
 			Name: "MultilineDocComment",
@@ -80,7 +80,7 @@ var A int
 // multiline one
 var A int
 `,
-			ExpectedComments: makeSimpleGoDoComments("This is a doc comment\nmultiline one", 66, "A"),
+			ExpectedComments: makeSimpleGoDoComments("This is a doc comment\nmultiline one", 67, "A"),
 		},
 		{
 			Name: "SimpleComment",
@@ -91,7 +91,7 @@ var A int
 				Comments: []snippetcomment.Comment{
 					{
 						Content:       "This is a simple comment",
-						StartPosition: 42,
+						StartPosition: 43,
 					},
 				},
 			},
@@ -106,7 +106,7 @@ var A int
 				Comments: []snippetcomment.Comment{
 					{
 						Content:       "This is a simple comment\nmultiline one",
-						StartPosition: 59,
+						StartPosition: 60,
 					},
 				},
 			},
