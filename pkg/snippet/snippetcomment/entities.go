@@ -23,12 +23,14 @@ type DocComment struct {
 	StartPosition token.Pos
 	Content       string
 	EntitiesNames []string
+	IsDirective   bool
 }
 
-func NewDocComment(content string, entitiesNames []string, pos token.Pos) DocComment {
+func NewDocComment(content string, entitiesNames []string, isDirective bool, pos token.Pos) DocComment {
 	return DocComment{
 		StartPosition: pos,
 		Content:       content,
 		EntitiesNames: entitiesNames,
+		IsDirective:   isDirective,
 	}
 }

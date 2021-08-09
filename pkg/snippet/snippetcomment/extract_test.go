@@ -112,6 +112,23 @@ var A int
 			},
 		},
 		{
+			Name: "GenerateComment",
+			Input: `
+//go:generate msgp
+type AccountBalance struct { }
+`,
+			ExpectedComments: snippetcomment.Comments{
+				DocComments: []snippetcomment.DocComment{
+					{
+						StartPosition: 65,
+						Content:       "",
+						EntitiesNames: []string{"AccountBalance"},
+						IsDirective:   true,
+					},
+				},
+			},
+		},
+		{
 			Name: "RealWorldExample",
 			Input: `
 // package

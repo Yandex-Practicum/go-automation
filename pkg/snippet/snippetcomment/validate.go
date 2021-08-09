@@ -9,6 +9,10 @@ import (
 )
 
 func ValidateDocComment(comment DocComment) error {
+	if comment.IsDirective {
+		return nil
+	}
+
 	content := comment.Content
 
 	if len(content) == 0 {
