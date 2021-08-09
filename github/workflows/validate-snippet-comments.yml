@@ -12,7 +12,7 @@ jobs:
           go-version: '1.15.0'
       - name: clone go-automation
         run: git clone https://github.com/Yandex-Practicum/go-automation.git /tmp/go-automation
-      - name: install yt-snippet-formatter
+      - name: install yt-comment-validator
         run: cd /tmp/go-automation/tools/yt-comment-validator && go install .
       - name: validate snippet format
-        run: yt-snippet-formatter -root=./lessons
+        run: yt-comment-validator -root=./lessons
