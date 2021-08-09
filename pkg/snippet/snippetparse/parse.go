@@ -44,7 +44,7 @@ func parse(fset *token.FileSet, filename string, src []byte, fragmentOk bool) (
 	// by inserting a package clause.
 	// Insert using a ';', not a newline, so that the line numbers
 	// in psrc match the ones in src.
-	psrc := append([]byte("package p;"), src...)
+	psrc := append([]byte("package p;\n"), src...)
 	file, err = parser.ParseFile(fset, filename, psrc, parserMode)
 	if err == nil {
 		sourceAdj = func(src []byte, indent int) []byte {
