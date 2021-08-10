@@ -60,7 +60,7 @@ func TestValidateDocComment(t *testing.T) {
 	}{
 		{
 			Name:                 "OK",
-			Content:              "Foo дока",
+			Content:              "Foo дока.",
 			EntityNames:          []string{"Foo"},
 			ExpectError:          false,
 			ExpectedErrorMessage: "",

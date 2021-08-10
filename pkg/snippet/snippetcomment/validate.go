@@ -2,7 +2,6 @@ package snippetcomment
 
 import (
 	"fmt"
-	"regexp"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -22,6 +21,11 @@ func ValidateDocComment(comment DocComment) error {
 	docPrefix := getCommonDocNamesPrefix(comment.EntitiesNames)
 	if !strings.HasPrefix(content, docPrefix) {
 		return errors.New(fmt.Sprintf("Doc comment must start with documented entity name (need prefix %s)", docPrefix))
+	}
+
+	contentRunes := []rune(content)
+	if lastRune := contentRunes[len(contentRunes)-1]; lastRune != '.' {
+		return errors.New("Doc comments must end up with .")
 	}
 
 	return nil
@@ -89,18 +93,4 @@ func ValidateComment(comment Comment) error {
 
 func newEmptyCommentError() error {
 	return errors.New("Empty comments are not allowed")
-}
-
-var (
-	russianAlphabetLower = regexp.MustCompile("[абвгдеёжзийклмнопрстуфхцчшщъыьэюя]")
-	russianAlphabetUpper = regexp.MustCompile("[АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ]")
-)
-
-func isRussianRune(r rune) bool {
-	return russianAlphabetUpper.MatchString(string(r)) || russianAlphabetLower.MatchString(string(r))
-}
-
-func isUpperCaseRune(r rune) bool {
-	runeString := string(r)
-	return strings.ToLower(runeString) != runeString
 }
