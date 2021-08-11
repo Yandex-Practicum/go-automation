@@ -10,12 +10,14 @@ type Comments struct {
 type Comment struct {
 	StartPosition token.Pos
 	Content       string
+	IsDirective   bool
 }
 
-func NewComment(content string, startPosition token.Pos) Comment {
+func NewComment(content string, isDirective bool, startPosition token.Pos) Comment {
 	return Comment{
 		StartPosition: startPosition,
 		Content:       content,
+		IsDirective:   isDirective,
 	}
 }
 

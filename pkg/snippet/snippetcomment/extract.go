@@ -31,14 +31,15 @@ func extractSimpleComments(snippet snippetparse.ParsedSnippet, docComments []Doc
 			continue
 		}
 
-		result = append(result, newNormalizedComment(comment.Text(), comment.Pos()))
+		commentText, isDirective := getCommentText(comment)
+		result = append(result, newNormalizedComment(commentText, isDirective, comment.Pos()))
 	}
 
 	return result
 }
 
-func newNormalizedComment(content string, pos token.Pos) Comment {
-	return NewComment(normalizeComment(content), pos)
+func newNormalizedComment(content string, isDirective bool, pos token.Pos) Comment {
+	return NewComment(normalizeComment(content), isDirective, pos)
 }
 
 func extractDocComments(snippet snippetparse.ParsedSnippet) []DocComment {

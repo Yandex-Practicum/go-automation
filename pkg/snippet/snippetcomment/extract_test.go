@@ -129,6 +129,21 @@ type AccountBalance struct { }
 			},
 		},
 		{
+			Name: "LinterComment",
+			Input: `
+//lint:file-ignore U1000 игнорируем не используемый код, так как он сгенерирован
+`,
+			ExpectedComments: snippetcomment.Comments{
+				Comments: []snippetcomment.Comment{
+					{
+						StartPosition: 143,
+						Content:       "",
+						IsDirective:   true,
+					},
+				},
+			},
+		},
+		{
 			Name: "RealWorldExample",
 			Input: `
 // package

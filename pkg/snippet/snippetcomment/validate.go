@@ -76,6 +76,10 @@ func getMinLength(runeArrays [][]rune) int {
 }
 
 func ValidateComment(comment Comment) error {
+	if comment.IsDirective {
+		return nil
+	}
+
 	content := comment.Content
 
 	if len(content) == 0 {
