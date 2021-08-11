@@ -1,7 +1,7 @@
 name: validate-snippet-comments
 on: [push]
 jobs:
-  validate-snippet-format:
+  validate-snippet-comments:
     runs-on: ubuntu-latest
     steps:
       - name: checkout repo content
