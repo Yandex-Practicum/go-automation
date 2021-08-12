@@ -93,10 +93,6 @@ func ValidateComment(comment Comment) error {
 
 	firstRune := []rune(content)[0]
 
-	if !isRussianRune(firstRune) {
-		return errors.New("Comments must be written in Russian")
-	}
-
 	if isUpperCaseRussianRune(firstRune) {
 		return errors.New("First letter must be in lower case")
 	}

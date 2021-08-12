@@ -50,9 +50,10 @@ func main() {
 					),
 					Position: snippet.Position.Start,
 				})
+			} else {
+				parsedSnippets = append(parsedSnippets, parsedSnippet)
 			}
 
-			parsedSnippets = append(parsedSnippets, parsedSnippet)
 		}
 
 		for _, snippet := range parsedSnippets {
