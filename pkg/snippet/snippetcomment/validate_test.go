@@ -38,6 +38,12 @@ func TestValidateComment(t *testing.T) {
 			ExpectError:          false,
 			ExpectedErrorMessage: "",
 		},
+		{
+			Name:                 "Upper case first letter",
+			Content:              "Большая буква",
+			ExpectError:          true,
+			ExpectedErrorMessage: "First letter must be in lower case",
+		},
 	}
 
 	for _, tc := range testCases {
