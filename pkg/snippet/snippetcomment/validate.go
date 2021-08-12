@@ -2,6 +2,7 @@ package snippetcomment
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -90,9 +91,28 @@ func ValidateComment(comment Comment) error {
 		return errors.New("Do not use . at the end of line comments")
 	}
 
+	firstRune := []rune(content)[0]
+
+	if isUpperCaseRussianRune(firstRune) {
+		return errors.New("First letter must be in lower case")
+	}
+
 	return nil
 }
 
 func newEmptyCommentError() error {
 	return errors.New("Empty comments are not allowed")
+}
+
+var (
+	russianAlphabetLower = regexp.MustCompile("[абвгдеёжзийклмнопрстуфхцчшщъыьэюя]")
+)
+
+func isRussianRune(r rune) bool {
+	return russianAlphabetLower.MatchString(strings.ToLower(string(r)))
+}
+
+func isUpperCaseRussianRune(r rune) bool {
+	runeString := string(r)
+	return isRussianRune(r) && strings.ToLower(string(r)) != runeString
 }
