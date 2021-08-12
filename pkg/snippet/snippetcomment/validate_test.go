@@ -32,6 +32,12 @@ func TestValidateComment(t *testing.T) {
 			ExpectError:          true,
 			ExpectedErrorMessage: "Do not use . at the end of line comments",
 		},
+		{
+			Name:                 "Ellipsis at the end",
+			Content:              "многоточие на конце...",
+			ExpectError:          false,
+			ExpectedErrorMessage: "",
+		},
 	}
 
 	for _, tc := range testCases {

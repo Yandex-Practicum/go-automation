@@ -86,9 +86,7 @@ func ValidateComment(comment Comment) error {
 		return newEmptyCommentError()
 	}
 
-	contentRunes := []rune(content)
-
-	if lastRune := contentRunes[len(contentRunes)-1]; lastRune == '.' {
+	if strings.HasSuffix(content, ".") && !strings.HasSuffix(content, "...") {
 		return errors.New("Do not use . at the end of line comments")
 	}
 
