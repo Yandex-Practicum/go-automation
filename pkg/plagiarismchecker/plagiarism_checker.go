@@ -3,6 +3,7 @@ package plagiarismchecker
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/snippet/snippetsearch"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -15,9 +16,10 @@ import (
 const textRuUrl = "http://api.text.ru/post"
 
 type Checker struct {
-	userKey       string
-	visible       bool
-	exceptDomains []string
+	userKey        string
+	visible        bool
+	exceptDomains  []string
+	removeSnippets bool
 }
 
 type Uid = string
@@ -41,15 +43,21 @@ type GetResultResponse struct {
 	ErrorDesc  string `json:"error_desc,omitempty"`
 }
 
-func New(userKey string, visible bool, exceptDomains []string) *Checker {
+func New(userKey string, visible bool, exceptDomains []string, removeSnippets bool) *Checker {
 	return &Checker{
-		userKey:       userKey,
-		visible:       visible,
-		exceptDomains: exceptDomains,
+		userKey:        userKey,
+		visible:        visible,
+		exceptDomains:  exceptDomains,
+		removeSnippets: removeSnippets,
 	}
 }
 
 func (c *Checker) AddText(text string) (Uid, error) {
+
+	if c.removeSnippets {
+		text = c.dropSnippets(text)
+	}
+
 	data := url.Values{}
 	data.Add("text", text)
 	data.Add("userkey", c.userKey)
@@ -127,4 +135,12 @@ func (c *Checker) getResult(form url.Values) (float32, error) {
 	}
 
 	return float32(unique), nil
+}
+
+func (c *Checker) dropSnippets(text string) string {
+	snippets := snippetsearch.FindSnippets(text)
+	for _, snippet := range snippets {
+		text = strings.Replace(text, snippet.Text, "", 1)
+	}
+	return text
 }
