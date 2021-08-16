@@ -10,11 +10,12 @@ import (
 )
 
 type Config struct {
-	UserKey       string   `env:"USER_KEY"`
-	Files         []string `env:"FILES"`
-	Visible       bool     `env:"VISIBLE" envDefault:"false"`
-	MinUniq       float32  `env:"MIN_UNIQ" envDefault:"0"`
-	ExceptDomains []string `env:"EXCEPT_DOMAINS" envDefault:""`
+	UserKey        string   `env:"USER_KEY"`
+	Files          []string `env:"FILES"`
+	Visible        bool     `env:"VISIBLE" envDefault:"false"`
+	MinUniq        float32  `env:"MIN_UNIQ" envDefault:"0"`
+	ExceptDomains  []string `env:"EXCEPT_DOMAINS" envDefault:""`
+	RemoveSnippets bool     `env:"REMOVE_SNIPPETS" envDefault:"false"`
 }
 
 var filenameRegexp = regexp.MustCompile(`\.md$`)
@@ -27,7 +28,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	checker := plagiarismchecker.New(cfg.UserKey, cfg.Visible, cfg.ExceptDomains)
+	checker := plagiarismchecker.New(cfg.UserKey, cfg.Visible, cfg.ExceptDomains, cfg.RemoveSnippets)
 
 	uids, err := textToReview(checker, cfg.Files)
 	if err != nil {
