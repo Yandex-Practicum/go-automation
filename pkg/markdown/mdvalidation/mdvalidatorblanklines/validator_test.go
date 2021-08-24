@@ -19,25 +19,32 @@ func TestValidator(t *testing.T) {
 		DocSource             string
 		ExpectedErrorPrefixes []string
 	}{
-		//{
-		//	Name:      "CodeBlockHasNoLines",
-		//	DocSource: "# Header\n```go\nfoo\n```",
-		//	ExpectedErrorPrefixes: []string{
-		//		"Nodes FencedCodeBlock",
-		//	},
-		//},
-		//{
-		//	Name:      "HeadingHasNoLines",
-		//	DocSource: "# Header\n# Header",
-		//	ExpectedErrorPrefixes: []string{
-		//		"Nodes Heading",
-		//	},
-		//},
+		{
+			Name:      "CodeBlockHasNoLines",
+			DocSource: "# Header\n```go\nfoo\n```",
+			ExpectedErrorPrefixes: []string{
+				"Nodes FencedCodeBlock",
+			},
+		},
+		{
+			Name:      "HeadingHasNoLines",
+			DocSource: "# Header\n# Header",
+			ExpectedErrorPrefixes: []string{
+				"Nodes Heading",
+			},
+		},
 		{
 			Name:      "QuoteHasNoLines",
-			DocSource: "# Header\n> quote",
+			DocSource: "# Header\n> quote\ncontinued",
 			ExpectedErrorPrefixes: []string{
 				"Nodes Blockquote",
+			},
+		},
+		{
+			Name:      "ListHasNoLines",
+			DocSource: "# Header\n- list item",
+			ExpectedErrorPrefixes: []string{
+				"Nodes List",
 			},
 		},
 	}

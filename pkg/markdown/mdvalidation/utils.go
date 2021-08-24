@@ -1,7 +1,7 @@
 package mdvalidation
 
 import (
-	"strings"
+	"math"
 
 	"github.com/yuin/goldmark/ast"
 )
@@ -31,18 +31,46 @@ func GetNodeText(node ast.Node, docSource []byte) string {
 		return string(node.Text(docSource))
 	}
 
-	lines := node.Lines()
+	nodeRange := GetNodeRange(node)
 
-	var sb strings.Builder
-	for _, segment := range lines.Sliced(0, lines.Len()) {
-		sb.Write(segment.Value(docSource))
-		if err := TraverseTree(node, func(node ast.Node) (err error, goDeeper bool) {
-			sb.WriteString(GetNodeText(node, docSource))
-			return nil, true
-		}); err != nil {
-			panic(err)
-		}
+	return string(docSource[nodeRange.Start:nodeRange.Stop])
+}
+
+type NodeRange struct {
+	Start int
+	Stop  int
+}
+
+func GetNodeRange(node ast.Node) NodeRange {
+	if node.Type() == ast.TypeInline {
+		panic("inline nodes have no range")
 	}
 
-	return sb.String()
+	start := math.MaxInt32
+	stop := -1
+	if err := TraverseTree(node, func(node ast.Node) (err error, goDeeper bool) {
+		if node.Type() == ast.TypeInline {
+			return nil, true
+		}
+
+		lines := node.Lines()
+		for _, line := range lines.Sliced(0, lines.Len()) {
+			if line.Start < start {
+				start = line.Start
+			}
+
+			if line.Stop > stop {
+				stop = line.Stop
+			}
+		}
+
+		return nil, true
+	}); err != nil {
+		panic(err)
+	}
+
+	return NodeRange{
+		Start: start,
+		Stop:  stop,
+	}
 }
