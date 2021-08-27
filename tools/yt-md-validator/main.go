@@ -5,6 +5,8 @@ import (
 	"flag"
 	"io/ioutil"
 	"log"
+	"sort"
+	"strings"
 
 	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/filesearch"
 	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/markdown/mdvalidation"
@@ -50,11 +52,39 @@ func main() {
 				log.Fatalf(err.Error())
 			}
 
-			infosPerFile[path] = append(infosPerFile[path], infos...)
+			if len(infos) > 0 {
+				infosPerFile[path] = append(infosPerFile[path], infos...)
+			}
 		}
 	}
 
 	if len(infosPerFile) > 0 {
-		log.Fatalf("Markdown lessons are poorly formatted: %v", infosPerFile)
+		log.Fatalf("Markdown lessons are poorly formatted: %v", formatError(infosPerFile))
 	}
+}
+
+func formatError(infosPerFile map[string][]*mdvalidation.ValidationInfo) string {
+	files := make([]string, 0, len(infosPerFile))
+	for f := range infosPerFile {
+		files = append(files, f)
+	}
+	sort.Strings(files)
+
+	var sb strings.Builder
+	for _, fileName := range files {
+		sb.WriteString(fileName)
+		sb.WriteString(":\n")
+
+		sort.Slice(infosPerFile[fileName], func(i, j int) bool {
+			return mdvalidation.GetNodeStart(infosPerFile[fileName][i].Node) < mdvalidation.GetNodeStart(infosPerFile[fileName][j].Node)
+		})
+
+		for _, info := range infosPerFile[fileName] {
+			sb.WriteString("\t")
+			sb.WriteString(info.Message)
+			sb.WriteString("\n")
+		}
+	}
+
+	return sb.String()
 }

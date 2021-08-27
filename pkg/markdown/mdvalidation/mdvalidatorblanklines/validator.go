@@ -25,8 +25,9 @@ func (v *validator) ValidateTree(ctx context.Context, tree ast.Node, docSource [
 	validationResults := make([]*mdvalidation.ValidationInfo, 0, len(badNodes))
 	for _, node := range badNodes {
 		validationResults = append(validationResults, &mdvalidation.ValidationInfo{
-			Message: fmt.Sprintf("Nodes %s are expected to have blank lines above. Node content\n%s", node.Kind(), mdvalidation.GetNodeText(node, docSource)),
-			Node:    node,
+			Message: fmt.Sprintf("Nodes %s are expected to have blank lines above. Node content\n%s", node.Kind(),
+				mdvalidation.GetNodeText(node, docSource, mdvalidation.NodeTextOptionLimit(200))),
+			Node: node,
 		})
 	}
 

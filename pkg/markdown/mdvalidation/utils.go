@@ -26,7 +26,38 @@ func TraverseTree(root ast.Node, callback NodeCallback) error {
 	return nil
 }
 
-func GetNodeText(node ast.Node, docSource []byte) string {
+type nodeTextOptions struct {
+	limit int
+}
+
+type NodeTextOption func(opts *nodeTextOptions)
+
+func NodeTextOptionLimit(limit int) NodeTextOption {
+	return func(opts *nodeTextOptions) {
+		opts.limit = limit
+	}
+}
+
+func GetNodeText(node ast.Node, docSource []byte, options ...NodeTextOption) string {
+	var opts nodeTextOptions
+	for _, opt := range options {
+		opt(&opts)
+	}
+
+	result := doGetNodeText(node, docSource)
+
+	if opts.limit > 0 {
+		resultRunes := []rune(result)
+
+		if opts.limit < len(resultRunes) {
+			return string(resultRunes[:opts.limit]) + "..."
+		}
+	}
+
+	return result
+}
+
+func doGetNodeText(node ast.Node, docSource []byte) string {
 	if node.Type() == ast.TypeInline {
 		return string(node.Text(docSource))
 	}
@@ -39,6 +70,10 @@ func GetNodeText(node ast.Node, docSource []byte) string {
 type NodeRange struct {
 	Start int
 	Stop  int
+}
+
+func GetNodeStart(node ast.Node) int {
+	return GetNodeRange(node).Start
 }
 
 func GetNodeRange(node ast.Node) NodeRange {
