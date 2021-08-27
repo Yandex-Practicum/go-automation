@@ -1,0 +1,18 @@
+name: validate-md-format
+on: [push]
+jobs:
+  validate-md-format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo content
+        uses: actions/checkout@v2
+      - name: setup golang
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.15.0'
+      - name: clone go-automation
+        run: git clone https://github.com/Yandex-Practicum/go-automation.git /tmp/go-automation
+      - name: install yt-md-validator
+        run: cd /tmp/go-automation/tools/yt-md-validator && go install .
+      - name: validate lessons
+        run: yt-md-validator -root=./lessons
