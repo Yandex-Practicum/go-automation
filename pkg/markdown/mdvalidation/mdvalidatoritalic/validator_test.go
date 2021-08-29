@@ -37,7 +37,7 @@ func TestValidator(t *testing.T) {
 		},
 		{
 			Name:      "CodeSpan",
-			DocSource: "```\n*text*\n```",
+			DocSource: "`*text*`",
 		},
 		{
 			Name:      "CodeBlock",
