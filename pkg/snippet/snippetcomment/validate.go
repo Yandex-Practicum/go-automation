@@ -29,6 +29,10 @@ func ValidateDocComment(comment DocComment) error {
 		return errors.New("Doc comments must end up with .")
 	}
 
+	if hasTooLingLine(comment.Lines) {
+		return errors.New(fmt.Sprintf("Every line of comment must be shorter than %d symbols", maxCommentLineLength))
+	}
+
 	return nil
 }
 
@@ -97,7 +101,28 @@ func ValidateComment(comment Comment) error {
 		return errors.New("First letter must be in lower case")
 	}
 
+	if hasTooLingLine(comment.Lines) {
+		return errors.New(fmt.Sprintf("Every line of comment must be shorter than %d symbols", maxCommentLineLength))
+	}
+
 	return nil
+}
+
+func hasTooLingLine(lines []string) bool {
+	for _, line := range lines {
+		if isTooLongCommentLine(line) {
+			return true
+		}
+	}
+
+	return false
+}
+
+const maxCommentLineLength = 85
+
+func isTooLongCommentLine(commentLine string) bool {
+	commentLineRunes := []rune(commentLine)
+	return len(commentLineRunes) > maxCommentLineLength
 }
 
 func newEmptyCommentError() error {

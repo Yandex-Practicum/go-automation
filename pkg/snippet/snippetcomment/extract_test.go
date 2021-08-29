@@ -2,6 +2,7 @@ package snippetcomment_test
 
 import (
 	"go/token"
+	"strconv"
 	"testing"
 
 	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/snippet/snippetcomment"
@@ -197,7 +198,27 @@ func main() {
 
 			comments := snippetcomment.ExtractComments(parsedSnippet)
 
-			require.EqualValues(t, tc.ExpectedComments, comments)
+			t.Run("SimpleComments", func(t *testing.T) {
+				require.Len(t, comments.Comments, len(tc.ExpectedComments.Comments))
+
+				for i, c := range tc.ExpectedComments.Comments {
+					t.Run(strconv.Itoa(i), func(t *testing.T) {
+						require.EqualValues(t, c.StartPosition, comments.Comments[i].StartPosition)
+						require.EqualValues(t, c.Content, comments.Comments[i].Content)
+						require.EqualValues(t, c.IsDirective, comments.Comments[i].IsDirective)
+					})
+				}
+			})
+
+			t.Run("DocComments", func(t *testing.T) {
+				require.Len(t, comments.DocComments, len(tc.ExpectedComments.DocComments))
+
+				for i, c := range tc.ExpectedComments.DocComments {
+					require.EqualValues(t, c.StartPosition, comments.DocComments[i].StartPosition)
+					require.EqualValues(t, c.Content, comments.DocComments[i].Content)
+					require.EqualValues(t, c.IsDirective, comments.DocComments[i].IsDirective)
+				}
+			})
 		})
 	}
 }
