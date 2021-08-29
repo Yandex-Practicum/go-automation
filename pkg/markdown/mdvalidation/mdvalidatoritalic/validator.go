@@ -39,7 +39,7 @@ func (v *validator) getBadNodes(ctx context.Context, tree ast.Node, docSource []
 	var result []ast.Node
 	if err := mdvalidation.TraverseTree(tree, func(node ast.Node) (error, bool) {
 		switch node.(type) {
-		case *ast.CodeSpan, *ast.CodeBlock:
+		case *ast.CodeSpan, *ast.CodeBlock, *ast.FencedCodeBlock:
 			return nil, false
 
 		case *ast.Document:

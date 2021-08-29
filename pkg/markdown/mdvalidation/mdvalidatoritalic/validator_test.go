@@ -20,12 +20,28 @@ func TestValidator(t *testing.T) {
 		ExpectedErrorPrefixes []string
 	}{
 		{
-			Name:      "NoItalic",
+			Name:      "NoStars",
 			DocSource: "text",
+		},
+		{
+			Name:      "SpaceInTheBeginning",
+			DocSource: "* text*",
+		},
+		{
+			Name:      "SpaceInTheEnd",
+			DocSource: "*text *",
 		},
 		{
 			Name:      "Bold",
 			DocSource: "**text**",
+		},
+		{
+			Name:      "CodeSpan",
+			DocSource: "```\n*text*\n```",
+		},
+		{
+			Name:      "CodeBlock",
+			DocSource: "```\n*text*\n```",
 		},
 		{
 			Name:      "Italic",
