@@ -12,6 +12,7 @@ import (
 	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/markdown/mdvalidation"
 	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/markdown/mdvalidation/mdvalidatorblanklines"
 	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/markdown/mdvalidation/mdvalidatorheaderlevels"
+	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/markdown/mdvalidation/mdvalidatoritalic"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/text"
 )
@@ -25,6 +26,7 @@ func init() {
 var allValidators = []mdvalidation.Validator{
 	mdvalidatorblanklines.NewValidator(),
 	mdvalidatorheaderlevels.NewValidator(),
+	mdvalidatoritalic.NewValidator(),
 }
 
 func main() {
