@@ -66,6 +66,11 @@ func (v *validator) nodeContainsItalic(ctx context.Context, nodeText string) boo
 	for _, submatch := range submatches {
 		start, end := submatch[2], submatch[3]
 
+		// dirty hack coz now i do not want to fix markdown parser
+		if start != 0 && nodeText[start-1] == '`' || end != len(nodeText) && nodeText[end] == '`' {
+			return false
+		}
+
 		isBoldStart := start != 0 && nodeText[start-1] == '*'
 		isBoldEnd := end != len(nodeText) && nodeText[end] == '*'
 
