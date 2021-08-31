@@ -12,6 +12,7 @@ import (
 	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/markdown/mdvalidation"
 	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/markdown/mdvalidation/mdvalidatorblanklines"
 	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/markdown/mdvalidation/mdvalidatorheaderlevels"
+	"github.com/Yandex-Practicum/go-automation/automation/gotools/pkg/markdown/mdvalidation/mdvalidatorlink"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/text"
 )
@@ -25,6 +26,7 @@ func init() {
 var allValidators = []mdvalidation.Validator{
 	mdvalidatorblanklines.NewValidator(),
 	mdvalidatorheaderlevels.NewValidator(),
+	mdvalidatorlink.NewValidator(),
 }
 
 func main() {
@@ -76,7 +78,7 @@ func formatError(infosPerFile map[string][]*mdvalidation.ValidationInfo) string 
 		sb.WriteString(":\n")
 
 		sort.Slice(infosPerFile[fileName], func(i, j int) bool {
-			return mdvalidation.GetNodeStart(infosPerFile[fileName][i].Node) < mdvalidation.GetNodeStart(infosPerFile[fileName][j].Node)
+			return mdvalidation.GetNodeStartOrZero(infosPerFile[fileName][i].Node) < mdvalidation.GetNodeStartOrZero(infosPerFile[fileName][j].Node)
 		})
 
 		for _, info := range infosPerFile[fileName] {

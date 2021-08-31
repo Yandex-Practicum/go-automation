@@ -76,6 +76,14 @@ func GetNodeStart(node ast.Node) int {
 	return GetNodeRange(node).Start
 }
 
+func GetNodeStartOrZero(node ast.Node) int {
+	if node.Type() == ast.TypeInline {
+		return 0
+	}
+
+	return GetNodeRange(node).Start
+}
+
 func GetNodeRange(node ast.Node) NodeRange {
 	if node.Type() == ast.TypeInline {
 		panic("inline nodes have no range")
