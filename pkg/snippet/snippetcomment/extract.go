@@ -31,28 +31,28 @@ func extractSimpleComments(snippet snippetparse.ParsedSnippet, docComments []Doc
 			continue
 		}
 
-		commentText, isDirective := getCommentText(comment)
-		result = append(result, newNormalizedComment(commentText, isDirective, comment.Pos()))
+		commentText, lines, isDirective := getCommentText(comment)
+		result = append(result, newNormalizedComment(commentText, lines, isDirective, comment.Pos()))
 	}
 
 	return result
 }
 
-func newNormalizedComment(content string, isDirective bool, pos token.Pos) Comment {
-	return NewComment(normalizeComment(content), isDirective, pos)
+func newNormalizedComment(content string, lines []string, isDirective bool, pos token.Pos) Comment {
+	return NewComment(normalizeComment(content), lines, isDirective, pos)
 }
 
 func extractDocComments(snippet snippetparse.ParsedSnippet) []DocComment {
 	var result []DocComment
 
 	handleDocCommentGroup := func(g *ast.CommentGroup, decl ast.Decl) {
-		commentText, isDirective := getCommentText(g)
-		result = append(result, newNormalizedDocComment(commentText, extractDeclarationNames(decl), isDirective, g.Pos()))
+		commentText, lines, isDirective := getCommentText(g)
+		result = append(result, newNormalizedDocComment(commentText, lines, extractDeclarationNames(decl), isDirective, g.Pos()))
 	}
 
 	if packageDoc := snippet.AST.Doc; packageDoc != nil {
-		commentText, isDirective := getCommentText(packageDoc)
-		result = append(result, newNormalizedDocComment(commentText, namesFromIdents(snippet.AST.Name), isDirective, packageDoc.Pos()))
+		commentText, lines, isDirective := getCommentText(packageDoc)
+		result = append(result, newNormalizedDocComment(commentText, lines, namesFromIdents(snippet.AST.Name), isDirective, packageDoc.Pos()))
 	}
 
 	for _, decl := range snippet.AST.Decls {
@@ -72,19 +72,28 @@ func extractDocComments(snippet snippetparse.ParsedSnippet) []DocComment {
 	return result
 }
 
-func getCommentText(g *ast.CommentGroup) (string, bool) {
+func getCommentText(g *ast.CommentGroup) (string, []string, bool) {
 	commentText := g.Text()
 	if len(commentText) > 0 {
-		return commentText, false
+		return commentText, getCommentLines(g), false
 	}
 
 	for _, line := range g.List {
 		if isDirectiveComment(line.Text) {
-			return "", true
+			return "", nil, true
 		}
 	}
 
-	return "", false
+	return "", nil, false
+}
+
+func getCommentLines(g *ast.CommentGroup) []string {
+	result := make([]string, 0, len(g.List))
+	for _, c := range g.List {
+		result = append(result, c.Text)
+	}
+
+	return result
 }
 
 func isDirectiveComment(c string) bool {
@@ -160,8 +169,8 @@ func extractDeclarationNames(decl ast.Decl) []string {
 	}
 }
 
-func newNormalizedDocComment(content string, entitiesNames []string, isDirective bool, pos token.Pos) DocComment {
-	return NewDocComment(normalizeComment(content), entitiesNames, isDirective, pos)
+func newNormalizedDocComment(content string, lines []string, entitiesNames []string, isDirective bool, pos token.Pos) DocComment {
+	return NewDocComment(normalizeComment(content), lines, entitiesNames, isDirective, pos)
 }
 
 func normalizeComment(content string) string {
